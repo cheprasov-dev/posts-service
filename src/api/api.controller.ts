@@ -45,7 +45,7 @@ export class ApiController {
     @User() user: UserAuthData,
     @Body() body: CreatePostDto,
   ): Promise<PostResponseDto> {
-    return this.postService.getMy(user, body);
+    return this.postService.create(user, body);
   }
 
   @Get('/posts/:id/comments')
