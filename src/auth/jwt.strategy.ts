@@ -9,7 +9,7 @@ interface Payload {
 }
 
 export interface UserAuthData {
-  userId: number;
+  id: number;
   userGroups: number[];
 }
 
@@ -32,6 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!user) {
       throw new UnauthorizedException();
     }
-    return { userId: payload.id, userGroups: payload.userGroups };
+    return { id: payload.id, userGroups: payload.userGroups };
   }
 }
