@@ -8,6 +8,11 @@ interface Payload {
   userGroups: number[];
 }
 
+export interface UserAuthData {
+  userId: number;
+  userGroups: number[];
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private configService: ConfigService) {
@@ -20,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: Payload) {
+  async validate(payload: Payload): Promise<UserAuthData> {
     // TODO here a call to the service will be implemented to check that the user exists.
     // TODO You can also add checks that the user is not blocked or deleted
     const user = {};
