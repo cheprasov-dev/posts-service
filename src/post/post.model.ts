@@ -9,7 +9,7 @@ import {
 
 import { Comment } from '../comment/comment.model';
 
-@Table
+@Table({ tableName: 'posts' })
 export class Post extends Model {
   @PrimaryKey
   @AutoIncrement
