@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 
-import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CommentModule } from './comment/comment.module';
 import { DatabaseModule } from './database/database.module';
@@ -28,6 +27,5 @@ import { PostModule } from './post/post.module';
       }),
     }),
   ],
-  controllers: [AppController],
 })
 export class AppModule {}
