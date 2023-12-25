@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserAuthData } from '../auth/jwt.strategy';
 import { User } from '../auth/user.decorator';
 import { CommentService } from '../comment/comment.service';
@@ -32,6 +33,7 @@ export class ApiController {
   }
 
   @Post('/posts')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create post' })
   @ApiResponse({
     status: 201,
