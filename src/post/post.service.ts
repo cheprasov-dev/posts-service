@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { UserAuthData } from '../auth/jwt.strategy';
+import { UserService } from '../user/user.service';
 
 import { PostResponseDto } from './post.dto';
 import { PostRepository } from './post.repository';
@@ -12,21 +13,25 @@ export class CreatePostBody {
 
 @Injectable()
 export class PostService {
-  constructor(private postRepository: PostRepository) {}
+  constructor(
+    private postRepository: PostRepository,
+    private userService: UserService,
+  ) {}
   async create(
     user: UserAuthData,
     body: CreatePostBody,
   ): Promise<PostResponseDto> {
-    if (!user.userGroups.includes(body.groupId)) {
+    if (!this.userService.isGroupMember(user, body.groupId)) {
       throw new HttpException(
         'You cannot create posts in this group',
         HttpStatus.FORBIDDEN,
       );
     }
+
     const insertResult = await this.postRepository.insertOne({
-      groupId: body.groupId,
       text: body.text,
-      id: user.id,
+      userId: user.id,
+      groupId: body.groupId,
     });
 
     return {
