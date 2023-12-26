@@ -36,6 +36,24 @@ interface FindOneResult {
   createdBy: number;
 }
 
+interface FindWithCommentCountFilter {
+  groupId: number;
+}
+
+interface FindWithCommentCountDatabaseResult {
+  id: number;
+  text: string;
+  created_by: number;
+  comments_count: number;
+}
+
+interface FindWithCommentCountResult {
+  id: number;
+  text: string;
+  createdBy: number;
+  commentsCount: number;
+}
+
 @Injectable()
 export class PostRepository {
   private table: string = 'posts';
@@ -92,5 +110,32 @@ export class PostRepository {
       groupId: post.group_id,
       createdBy: post.created_by,
     };
+  }
+
+  async findWithCommentCount(
+    filter: FindWithCommentCountFilter,
+  ): Promise<FindWithCommentCountResult[]> {
+    const queryString = `
+      SELECT posts.*, (COUNT(comments.id)::INTEGER) AS comments_count
+      FROM posts
+      LEFT JOIN comments ON posts.id = comments.post_id
+      WHERE group_id = $1
+      GROUP BY posts.id;
+    `;
+
+    const foundData =
+      await this.databaseService.query<FindWithCommentCountDatabaseResult>(
+        queryString,
+        [filter.groupId],
+      );
+
+    const posts = foundData.rows;
+
+    return posts.map((elem) => ({
+      id: elem.id,
+      text: elem.text,
+      createdBy: elem.created_by,
+      commentsCount: elem.comments_count,
+    }));
   }
 }

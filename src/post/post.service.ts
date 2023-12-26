@@ -11,8 +11,16 @@ export class CreatePostBody {
   text: string;
 }
 
+interface FilterValues {
+  groupId: number;
+}
+
 @Injectable()
 export class PostService {
+  forbiddenException = new HttpException(
+    'You cannot create posts in this group',
+    HttpStatus.FORBIDDEN,
+  );
   constructor(
     private postRepository: PostRepository,
     private userService: UserService,
@@ -22,10 +30,7 @@ export class PostService {
     body: CreatePostBody,
   ): Promise<PostResponseDto> {
     if (!this.userService.isGroupMember(user, body.groupId)) {
-      throw new HttpException(
-        'You cannot create posts in this group',
-        HttpStatus.FORBIDDEN,
-      );
+      throw this.forbiddenException;
     }
 
     const insertResult = await this.postRepository.insertOne({
@@ -39,5 +44,14 @@ export class PostService {
       commentsCount: 0,
     };
   }
-  async get() {}
+  async get(
+    user: UserAuthData,
+    filter: FilterValues,
+  ): Promise<PostResponseDto[]> {
+    if (!this.userService.isGroupMember(user, filter.groupId)) {
+      throw this.forbiddenException;
+    }
+
+    return await this.postRepository.findWithCommentCount(filter);
+  }
 }

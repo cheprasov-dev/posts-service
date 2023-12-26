@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Controller,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -9,7 +17,7 @@ import { CommentService } from '../comment/comment.service';
 import { PostResponseDto } from '../post/post.dto';
 import { PostService } from '../post/post.service';
 
-import { CreateCommentDto, CreatePostDto } from './api.dto';
+import { CreateCommentDto, CreatePostDto, QueryGetPostsDto } from './api.dto';
 
 @Controller('api/:version')
 export class ApiController {
@@ -19,6 +27,7 @@ export class ApiController {
   ) {}
 
   @Get('/posts')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get posts' })
   @ApiResponse({
     status: 200,
@@ -29,8 +38,11 @@ export class ApiController {
   @ApiResponse({ status: 401, description: 'User is not authorized' })
   @ApiResponse({ status: 403, description: 'Access is denied' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getPosts(@User() user: UserAuthData): Promise<PostResponseDto[]> {
-    return this.postService.create(user);
+  async getPosts(
+    @User() user: UserAuthData,
+    @Query() query: QueryGetPostsDto,
+  ): Promise<PostResponseDto[]> {
+    return this.postService.get(user, query);
   }
 
   @Post('/posts')
