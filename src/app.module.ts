@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommentModule } from './comment/comment.module';
 import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PostModule } from './post/post.module';
         PG_DATABASE: Joi.string().required(),
       }),
     }),
+    UserModule,
   ],
 })
 export class AppModule {}
