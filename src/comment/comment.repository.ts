@@ -25,6 +25,10 @@ interface FindAllFilter {
   postId: number;
 }
 
+const filterConvertValues: { [key: string]: string } = {
+  postId: 'post_id',
+};
+
 @Injectable()
 export class CommentRepository {
   private table: string = 'comments';
@@ -53,7 +57,7 @@ export class CommentRepository {
 
   async findAll(filter: FindAllFilter): Promise<DataResponse[]> {
     const fields = Object.keys(filter).map(
-      (elem, index) => `${elem} = $${index + 1}`,
+      (elem: string, index) => `${filterConvertValues[elem]} = $${index + 1}`,
     );
     const values = Object.values(filter);
     const queryString = `
