@@ -4,11 +4,12 @@ import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserAuthData } from '../auth/jwt.strategy';
 import { User } from '../auth/user.decorator';
+import { CommentResponseDto } from '../comment/comment.dto';
 import { CommentService } from '../comment/comment.service';
-import { PostCommentResponseDto, PostResponseDto } from '../post/post.dto';
+import { PostResponseDto } from '../post/post.dto';
 import { PostService } from '../post/post.service';
 
-import { CreatePostCommentDto, CreatePostDto } from './api.dto';
+import { CreateCommentDto, CreatePostDto } from './api.dto';
 
 @Controller('api/:version')
 export class ApiController {
@@ -85,7 +86,7 @@ export class ApiController {
   @ApiResponse({
     status: 201,
     description: 'Comment created',
-    type: PostCommentResponseDto,
+    type: CommentResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'User is not authorized' })
@@ -94,8 +95,8 @@ export class ApiController {
   async createComment(
     @User() user: UserAuthData,
     @Param('id') postId: number,
-    @Body() body: CreatePostCommentDto,
-  ): Promise<PostCommentResponseDto> {
+    @Body() body: CreateCommentDto,
+  ): Promise<CommentResponseDto> {
     return this.commentService.create(user, postId, body);
   }
 }

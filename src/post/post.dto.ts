@@ -4,9 +4,3 @@ export class PostResponseDto {
   createdBy: number;
   commentsCount: number;
 }
-
-export class PostCommentResponseDto {
-  id: number;
-  text: string;
-  createdBy: number;
-}

@@ -9,10 +9,7 @@ export class CreatePostDto {
   text: string;
 }
 
-export class CreatePostCommentDto {
-  @IsNumber()
-  postId: number;
-
+export class CreateCommentDto {
   @IsString()
   @IsNotEmpty()
   text: string;
