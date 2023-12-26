@@ -91,7 +91,9 @@ export class PostRepository {
     const values = Object.values(filter);
 
     const queryString = `
-      SELECT * FROM ${this.table} WHERE ${fields.join(', ')}
+      SELECT * FROM ${this.table} ${
+        fields.length > 0 && 'WHERE ' + fields.join(', ')
+      }
     `;
 
     const foundData = await this.databaseService.query<FindOneDatabaseResult>(
