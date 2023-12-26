@@ -22,7 +22,7 @@ interface DataFromDatabase {
 }
 
 interface FindAllFilter {
-  id: number;
+  postId: number;
 }
 
 @Injectable()
@@ -61,6 +61,7 @@ export class CommentRepository {
         fields.length > 0 && 'WHERE ' + fields.join(', ')
       }
     `;
+
     const foundData = await this.databaseService.query<DataFromDatabase>(
       queryString,
       values,

@@ -41,7 +41,7 @@ export class CommentService {
     }
 
     return this.commentRepository.findAll({
-      id: postId,
+      postId,
     });
   }
 
