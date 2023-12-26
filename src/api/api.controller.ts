@@ -64,6 +64,7 @@ export class ApiController {
   }
 
   @Get('/posts/:id/comments')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Get post's comments" })
   @ApiParam({
     name: 'id',
@@ -74,7 +75,7 @@ export class ApiController {
   @ApiResponse({
     status: 200,
     description: "The found post's comment records",
-    type: [PostCommentResponseDto],
+    type: [CommentResponseDto],
   })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'User is not authorized' })
@@ -83,7 +84,7 @@ export class ApiController {
   async getPostComments(
     @User() user: UserAuthData,
     @Param('id') postId: number,
-  ): Promise<PostCommentResponseDto[]> {
+  ): Promise<CommentResponseDto[]> {
     return this.commentService.getByPostId(user, postId);
   }
 

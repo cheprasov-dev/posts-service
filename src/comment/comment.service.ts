@@ -19,11 +19,32 @@ interface CreateCommentBody {
 @Injectable()
 export class CommentService {
   constructor(
+    private userService: UserService,
     private postRepository: PostRepository,
     private commentRepository: CommentRepository,
-    private userService: UserService,
   ) {}
-  async getByPostId() {}
+  async getByPostId(
+    user: UserAuthData,
+    postId: number,
+  ): Promise<CommentResponseDto[]> {
+    const post = await this.postRepository.findOne({ id: postId });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (!this.userService.isGroupMember(user, post.groupId)) {
+      throw new HttpException(
+        'You cannot create posts in this group',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return this.commentRepository.findAll({
+      id: postId,
+    });
+  }
+
   async create(
     user: UserAuthData,
     postId: number,
