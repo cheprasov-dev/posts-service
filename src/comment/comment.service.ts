@@ -35,7 +35,7 @@ export class CommentService {
 
     if (!this.userService.isGroupMember(user, post.groupId)) {
       throw new HttpException(
-        'You cannot create posts in this group',
+        'You cannot read comments on posts in this group.',
         HttpStatus.FORBIDDEN,
       );
     }
