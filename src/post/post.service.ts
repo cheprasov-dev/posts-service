@@ -22,8 +22,8 @@ export class PostService {
     HttpStatus.FORBIDDEN,
   );
   constructor(
-    private postRepository: PostRepository,
     private userService: UserService,
+    private postRepository: PostRepository,
   ) {}
   async create(
     user: UserAuthData,
