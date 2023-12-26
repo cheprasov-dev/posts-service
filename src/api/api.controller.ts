@@ -88,6 +88,7 @@ export class ApiController {
   }
 
   @Post('/posts/:id/comments')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Create post's comment" })
   @ApiParam({
     name: 'id',
