@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  post-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PG_HOST=postgresql
+  postgresql:
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+
+networks:
+  post-service:
