@@ -1,73 +1,37 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Posts service
+## Общее описание
+Данный сервис предоставляет API для создания, просмотра сообщений (постов) и комментариев к ним. Сервис включает авторизацию через JWT, базу данных для хранения данных и набор API-методов.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Инструкции по первому запуску
+1. **Заполнить env переменные:** Убедитесь, что все необходимые переменные окружения заданы в соответствии с конфигурацией проекта.
+2. **Запуск Docker Compose:** Выполните команду `docker compose up -d` для запуска сервисов, определённых в Docker Compose.
+3. **Восстановление базы данных:** Сделайте рестор базы данных из файла `postgres.sql`.
+4. **Документация API:** Доступ к документации API осуществляется по адресу `localhost:PORT/api/docs`, где `PORT` - порт, на котором запущен сервис.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Авторизация
+- **Тип авторизации:** JWT (JSON Web Tokens).
+- **Payload JWT:** Содержит `id` пользователя и массив `groupIds` (идентификаторы групп, к которым пользователь имеет доступ). При необходимости, в payload могут быть добавлены дополнительные параметры.
+- **Ключ** для подписи JWT необходимо указать в JWT_SECRET (при написание тестов использован ключ по умолчанию - SOME_SECRET)
 
-## Description
+## База данных
+- **Модели:**
+    - `posts`: Обязательные поля - `id`, `group_id`, `text`, `created_by`.
+    - `comments`: Обязательные поля - `id`, `post_id`, `text`, `created_by`.
+    - Можно добавить дополнительные модели и поля по необходимости.
+- **Особенности:**
+    - Идентификаторы групп (`group_id`) и пользователя (`created_by`) обрабатываются в другом сервисе и не включаются в текущий сервис.
+    - Идентификатор группы получается из параметров запроса, а идентификатор пользователя - из JWT.
+- **Инициализация.** Для создания коллекций необходимо сделать рестор из файла postgres.sql
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Структура проекта
+- **api**: Контроллеры, DTO, модули API.
+- **auth**: Модули аутентификации, стратегии JWT, гварды, декораторы.
+- **comment**: DTO, модули, репозитории и сервисы для комментариев.
+- **post**: DTO, модули, репозитории и сервисы для постов.
+- **user**: Модули и сервисы пользователя.
+- **database**: Модули и сервисы для работы с базой данных.
+- **app.module.ts**: Главный модуль приложения.
+- **main.ts**: Точка входа в приложение.
 
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Документация API
+Документация доступна по адресу: `localhost:PORT/api/docs`
